@@ -9,8 +9,30 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
+builder.Services.AddScoped<IClassroomService, ClassroomService>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+
+var provider = builder.Configuration.GetValue<string>("DatabaseProvider");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    if (provider == "MySql")
+    {
+        var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    }
+    else if (provider == "SqlServer")
+    {
+        var connectionString = builder.Configuration.GetConnectionString("SqlServerConnection");
+        options.UseSqlServer(connectionString);
+    }
+    else
+    {
+        throw new InvalidOperationException($"El proveedor '{provider}' no está configurado o no es soportado.");
+    }
+});
 
 builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
 builder.Services.AddScoped<IClassroomService, ClassroomService>();
@@ -24,7 +46,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.MapControllers();
 
 app.Run();
