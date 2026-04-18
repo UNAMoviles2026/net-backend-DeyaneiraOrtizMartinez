@@ -45,5 +45,12 @@ namespace reservations_api.Repositories
                 .Where(r => r.ClassroomId == classroomId && r.ReservationDate.Date == date.Date)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Reservation>> FindByDateAsync(DateTime date)
+        {
+            return await _context.Reservations
+                .Where(r => r.ReservationDate.Date == date.Date)
+                .ToListAsync();
+        }
     }
 }

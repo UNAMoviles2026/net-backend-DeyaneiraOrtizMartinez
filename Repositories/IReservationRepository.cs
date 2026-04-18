@@ -11,5 +11,6 @@ namespace reservations_api.Repositories
         Task<Reservation> CreateAsync(Reservation reservation);
         Task DeleteAsync(Guid id);
         Task<IEnumerable<Reservation>> FindByClassroomAndDateAsync(Guid classroomId, DateTime date);
+        Task<IEnumerable<Reservation>> FindByDateAsync(DateTime date);
     }
 }

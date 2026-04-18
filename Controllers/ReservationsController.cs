@@ -17,6 +17,18 @@ namespace reservations_api.Controllers
             _reservationService = reservationService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetReservationsByDate([FromQuery] DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return BadRequest(new { message = "The date query parameter is required." });
+            }
+
+            var reservations = await _reservationService.GetReservationsByDateAsync(date.Value);
+            return Ok(reservations);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateReservation([FromBody] CreateReservationRequest request)
         {

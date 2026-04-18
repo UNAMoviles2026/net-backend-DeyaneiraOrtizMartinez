@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using reservations_api.DTOs.Requests;
@@ -46,6 +47,12 @@ namespace reservations_api.Services
 
             // 4. Return response DTO
             return ReservationMapper.ToResponse(createdReservation);
+        }
+
+        public async Task<IEnumerable<ReservationResponse>> GetReservationsByDateAsync(DateTime date)
+        {
+            var reservations = await _reservationRepository.FindByDateAsync(date);
+            return reservations.Select(ReservationMapper.ToResponse).ToList();
         }
 
         public async Task CancelReservationAsync(Guid id)
